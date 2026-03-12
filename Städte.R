@@ -12,7 +12,7 @@ filter(data, AffiliationTypeLabel=="Mitantragsteller") %>%
   mutate(StadtLabel = ifelse(is.na(StadtLabel), 'Unbekannt', StadtLabel)) %>%
   column_to_rownames(var='StadtLabel') %>%
   CA()%>%
-  fviz_ca(title = 'Co-Apps nach Städten')
+  fviz_ca(title = 'Co-Apps nach Städten', repel=true)
 
 
 filter(data, AffiliationTypeLabel=="Mitantragsteller" | AffiliationTypeLabel=="Beteiligter") %>%
@@ -24,7 +24,7 @@ filter(data, AffiliationTypeLabel=="Mitantragsteller" | AffiliationTypeLabel=="B
     values_fill = 0
   ) %>%
   mutate(StadtLabel = ifelse(is.na(StadtLabel), 'Unbekannt', StadtLabel)) %>%
-  column_to_rownames(var='StadtLabel') %>%
+  column_to_rownames(var='StadtLabel', repel=true) %>%
   CA()
 
 

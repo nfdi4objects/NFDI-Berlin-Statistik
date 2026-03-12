@@ -1,3 +1,4 @@
+library(tidyverse)
 library(FactoMineR)
 library(factoextra)
 
@@ -12,7 +13,7 @@ filter(data, AffiliationTypeLabel=="Mitantragsteller") %>%
   mutate(BundeslandLabel = ifelse(is.na(BundeslandLabel), 'Unbekannt', BundeslandLabel)) %>%
   column_to_rownames(var='BundeslandLabel') %>%
   CA() %>%
-  fviz_ca(title = 'Co-Apps nach Ländern')
+  fviz_ca(title = 'Co-Apps nach Ländern', repel=true)
 
 filter(data, AffiliationTypeLabel=="Mitantragsteller" | AffiliationTypeLabel=="Beteiligter") %>%
   count(KonsortiumLabel, BundeslandLabel) %>%
