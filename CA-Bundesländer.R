@@ -27,7 +27,7 @@ filter(data, AffiliationTypeLabel=="Hauptantragssteller" | AffiliationTypeLabel=
   mutate(BundeslandLabel = ifelse(is.na(BundeslandLabel), 'Unbekannt', BundeslandLabel)) |>
   column_to_rownames(var='BundeslandLabel') |>
   CA() |>
-  fviz_ca(title = 'Co-Apps & Participants nach Ländern')
+  fviz_ca_biplot(title = 'Co-Apps & Participants nach Ländern', col.col = "#13294B") + theme_minimal()
 
 filter(data, AffiliationTypeLabel=="Hauptantragssteller" | AffiliationTypeLabel=="Mitantragsteller" | AffiliationTypeLabel=="Beteiligter") |>
   count(KonsortiumLabel, BundeslandLabel) |>
