@@ -1,4 +1,5 @@
 library(tidyverse)
+library(gt)
 library(httr2)
 library(dplyr)
 library(purrr)
@@ -58,5 +59,47 @@ data <- map_dfr(bindings, function(row) {
   tibble(!!!setNames(lapply(row, function(v) v$value), names(row)))
 })
 
-# Print the result
+# Define the target combinations, adding a flag column
+target_combinations <- data.frame(
+  KonsortiumLabel = c(
+    "BERD@NFDI", "DAPHNE4NFDI", "DataPLANT", "FAIRagro", "FAIRmat", "GHGA",
+    "KonsortSWD", "MaRDI", "NFDI-MatWerk", "NFDI4Biodiversity", "NFDI4BIOIMAGE",
+    "NFDI4Cat", "NFDI4Chem", "NFDI4Culture", "NFDI4DataScience", "NFDI4Earth",
+    "NFDI4Energy", "NFDI4Health", "NFDI4Immuno", "NFDI4ING", "NFDI4Memory",
+    "NFDI4Microbiota", "NFDI4Objects", "NFDIxCS", "PUNCH4NFDI", "Text+"
+  ),
+  InstitutionLabel = c(
+    "Universität Mannheim", "Deutsches Elektronen-Synchrotron",
+    "Albert-Ludwigs-Universität Freiburg", "ZALF",
+    "Humboldt-Universität zu Berlin", "Deutsches Krebsforschungszentrum",
+    "GESIS – Leibniz-Institut für Sozialwissenschaften",
+    "Weierstraß-Institut für Angewandte Analysis und Stochastik",
+    "Fraunhofer-Gesellschaft", "Universität Bremen",
+    "Heinrich-Heine-Universität Düsseldorf", "DECHEMA",
+    "Friedrich-Schiller-Universität Jena",
+    "Akademie der Wissenschaften und der Literatur Mainz",
+    "Fraunhofer-Gesellschaft", "Technische Universität Dresden",
+    "Carl von Ossietzky Universität Oldenburg",
+    "Leibniz-Institut für Präventionsforschung und Epidemiologie",
+    "Deutsches Krebsforschungszentrum", "Technische Universität Darmstadt",
+    "Leibniz-Institut für Europäische Geschichte",
+    "ZB MED – Informationszentrum Lebenswissenschaften",
+    "Deutsches Archäologisches Institut", "Universität Duisburg-Essen",
+    "Deutsches Elektronen-Synchrotron", "Leibniz-Institut für Deutsche Sprache"
+  ),
+  is_target = TRUE,  # Add a flag column
+  stringsAsFactors = FALSE
+)
+
+# Update AffiliationTypeLabel
+data <- data %>%
+  left_join(target_combinations, by = c("KonsortiumLabel", "InstitutionLabel")) %>%
+  mutate(
+    AffiliationTypeLabel = case_when(
+      AffiliationTypeLabel %in% c("Mitantragsteller", "Bewerber") & is_target ~ "Hauptantragssteller",
+      TRUE ~ AffiliationTypeLabel  # Keep original value otherwise
+    )
+  ) %>%
+  select(-is_target)  # Remove the flag column
+
 print(data)
